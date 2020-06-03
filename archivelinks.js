@@ -42,6 +42,7 @@ function makeDirIfMissing(path) {
 }
 
 
+const regexSlash = new RegExp("\/", 'g');
 async function scrape(link, storagePath) {
 
   const browser = await puppeteer.launch({
@@ -49,7 +50,7 @@ async function scrape(link, storagePath) {
   });
 
   const page = await browser.newPage();
-  const fileStorageName = storagePath + link.replace("http://", "").replace("https://","").replace("/","_");
+  const fileStorageName = storagePath + link.replace("http://", "").replace("https://","").replace(regexSlash,"_");
 
   console.log("Puppeteer about to snapshot: " + link);
   await page.goto(link);
