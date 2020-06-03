@@ -63,11 +63,11 @@ async function handleJobs(threadName) {
 }
 
 
-const regexSlash = new RegExp("[^0-9a-zA-Z-._]", 'g');
+const unsafeCharacterRegex = new RegExp("[^0-9a-zA-Z-._]", 'g');
 async function scrape(browser, link, storagePath, threadName) {
 
   const page = await browser.newPage();
-  const fileStorageName = storagePath + link.replace("http://", "").replace("https://","").replace(regexSlash,"_");
+  const fileStorageName = storagePath + link.replace("http://", "").replace("https://","").replace(unsafeCharacterRegex,"_");
 
   console.log(`Thread ${threadName}: Puppeteer about to snapshot: ${link}`);
   await page.goto(link);
