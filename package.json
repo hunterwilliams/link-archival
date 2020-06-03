@@ -1,10 +1,13 @@
 {
-  "name": "archivelinks",
+  "name": "link-archival",
   "version": "1.0.0",
   "description": "",
-  "main": "archivelinks.js",
+  "bin": {
+    "link-archival": "lib/cli.js"
+  },
+  "main": "lib",
   "scripts": {
-    "start": "node archivelinks.js screen-all",
+    "link-archival": "node lib/cli.js screen-all",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
