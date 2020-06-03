@@ -71,6 +71,20 @@ async function scrape(browser, link, storagePath, threadName) {
 
   console.log(`Thread ${threadName}: Puppeteer about to snapshot: ${link}`);
   await page.goto(link);
+  
+
+  if (link.indexOf("twitter.com") !== -1) {
+    await page.waitForSelector('[data-testid="tweet"]');
+
+    /* skip over replies hidden popup if it's there */
+    await page.waitForXPath('//span[contains(text(), "OK")]/ancestor-or-self::div[@role="button"]', {timeout: 200})
+      .then((element) => {
+        element.click()
+      })
+      .catch(() => {});
+    await page.waitForXPath('//span[contains(text(), "OK")]/ancestor-or-self::div[@role="button"]', {hidden: true})
+      .catch(() => {});
+  }
   await page.screenshot({path: fileStorageName + ".png"});
   return true;
 }
