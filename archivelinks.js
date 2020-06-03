@@ -116,19 +116,27 @@ async function scrape(browser, link, storagePath, threadName) {
     });
     await page.waitForSelector('[data-testid="tweet"]');
 
-    let videoVariants = [];
     try {
       const tweetData = await tweetResponse.json();
       console.log(`${link} has tweet data`);
-      videoVariants = tweetData.globalObjects.tweets[tweetId].extended_entities.media[0].video_info.variants;
+      const twitterMedia = tweetData.globalObjects.tweets[tweetId].extended_entities.media;
+      for (let i = 0; i < twitterMedia.length; i += 1) {
+        if (twitterMedia[i].type === "photo") {
+          console.log("Downloading photo... ", twitterMedia[i].media_url_https);
+          download(twitterMedia[i].media_url_https, fileStorageName + i + ".jpg");
+        } else if (twitterMedia[i].type === "video"){
+          const videoVariants = twitterMedia[i].video_info.variants;
+          if (videoVariants.length > 0) {
+            const highestResolutionVideoFile = videoVariants.sort((a,b) => b.bitrate - a.bitrate)[0].url;
+            console.log("Downloading video... ", highestResolutionVideoFile);
+            download(highestResolutionVideoFile, fileStorageName + ".mp4");
+          }
+        }
+      }
     } catch(err) {
       console.log(err);
     }
-    if (videoVariants && videoVariants.length > 0) {
-      const highestResolutionVideoFile = videoVariants.sort((a,b) => b.bitrate - a.bitrate)[0].url;
-      console.log("Downloading video... ", highestResolutionVideoFile);
-      download(highestResolutionVideoFile, fileStorageName + ".mp4");
-    }
+    
     /* skip over replies hidden popup if it's there */
     await page.waitForXPath('//span[contains(text(), "OK")]/ancestor-or-self::div[@role="button"]', {timeout: 200})
       .then((element) => {
