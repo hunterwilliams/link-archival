@@ -2,6 +2,17 @@
 
 This allows for logging a large number of links spread throughout text files to be snapshotted in order for archivial.
 
+## Sites & Files Handled
+
+ * Any site
+   * Rough Screenshot
+ * Reddit
+   * Rough Screenshot
+   * Video Download
+ * Twitter
+   * Rough Screenshot
+   * Photo Download
+   * Video Download
 
 ## How to Use
 
