@@ -63,7 +63,7 @@ async function handleJobs(threadName) {
 }
 
 
-const regexSlash = new RegExp("\/", 'g');
+const regexSlash = new RegExp("[^0-9a-zA-Z-._]", 'g');
 async function scrape(browser, link, storagePath, threadName) {
 
   const page = await browser.newPage();
