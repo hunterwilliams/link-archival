@@ -60,7 +60,7 @@ function download(url, dest, cb) {
 
 async function handleJobs(threadName) {
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-notifications']
   });
   process.on("message", (msg) => {
     if (msg === "off") {
@@ -87,9 +87,28 @@ async function scrape(browser, link, storagePath, threadName) {
 
   console.log(`Thread ${threadName}: Puppeteer about to snapshot: ${link}`);
   await page.goto(link);
-  
 
-  if (link.indexOf("twitter.com") !== -1) {
+  if (link.indexOf("reddit.com") !== -1) {
+    await page.waitForSelector('.Post');
+    let rawVideoUrl = "";
+    try {
+      const videoMetaTag = await page.waitForSelector('meta[property="og:video"]');
+      const videoMetaContent = await videoMetaTag.getProperty('content');
+      rawVideoUrl = await videoMetaContent.jsonValue();
+    } catch (e) {
+      // no video
+      console.log(e);
+      console.log('no video');
+    }
+    if (rawVideoUrl) {
+      rawVideoUrl = rawVideoUrl.replace("https://v.redd.it/","");
+      const videoId = rawVideoUrl.substr(0, rawVideoUrl.indexOf("/"));
+      const redditVideoDownloadUrl = `https://v.redd.it/${videoId}/DASH_720?source=fallback`;
+      console.log(`Downloading video ${videoId} from Reddit`);
+      download(redditVideoDownloadUrl, fileStorageName + ".mp4");
+    }
+  }
+  else if (link.indexOf("twitter.com") !== -1) {
     const tweetId = link.substr(link.lastIndexOf("/") + 1);
     const expectedTweetAPIUrl = `https://api.twitter.com/2/timeline/conversation/${tweetId}.json`;
     const tweetResponse = await page.waitForResponse(request => {
