@@ -1,0 +1,16 @@
+{
+  "name": "archivelinks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "archivelinks.js",
+  "scripts": {
+    "start": "node archivelinks.js screen-all",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "event-stream": "^4.0.1",
+    "puppeteer": "^3.3.0"
+  }
+}
